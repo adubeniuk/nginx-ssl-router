@@ -63,4 +63,5 @@
   with_items: "{{ ssl_domains.s3_keys }}"
   register: cert_check
 
-- debug: msg="{{ cert_check }}"
+- debug: msg="{{ item["stdout"] }}"
+  with_items: cert_check
