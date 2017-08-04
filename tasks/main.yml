@@ -57,3 +57,10 @@
 - name: reload nginx
   service: name=nginx state=reloaded
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: check certificates and list expiration dates
+  shell: domain={{ item | basename }}; echo | openssl s_client -connect $domain:443 2> /dev/null | openssl x509 -noout -enddate | cut -d = -f 2 | xargs -I {} echo {} $domain
+  with_items: "{{ ssl_domains.s3_keys }}"
+  register: cert_check
+
+- debug: msg="{{ cert_check }}"
